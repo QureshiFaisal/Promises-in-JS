@@ -3,6 +3,52 @@
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
+////////////Making AJAX calls using XMLHttp requests//////////
+const getCountryData = function(country){
+
+
+const request = new XMLHttpRequest(); 
+request.open('GET',`https://restcountries.eu/rest/v2/name/${country}`);
+
+request.send();
+
+request.addEventListener('load', function(){
+   const [data] = JSON.parse(request.responseText);
+   console.log(data);
+   
+const html = ` <article class="country">
+<img class="country__img" src="${data.flag}" />
+<div class="country__data">
+  <h3 class="country__name">${data.name}</h3>
+  <h4 class="country__region">${data.region}</h4>
+  <p class="country__row"><span>👫</span>${(+data.population / 1000000).toFixed(1)} people</p>
+  <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
+  <p class="country__row"><span>💰</span>${data.currencies[0].name}</p>
+</div>
+</article>
+`;
+
+countriesContainer.insertAdjacentHTML('beforeend',html);
+countriesContainer.style.opcacity = 1;
+});
+};
+getCountryData('portugal');
+getCountryData('usa');
+getCountryData('germany');
+//Step1 :Make Get request. Calling the XMLHttp function and assigning it to a constant.
+// Step 2 : Open the request. First parameter is type of request to get data i.e 'GET', the second is the string containing the URL to which the Ajax call should be made.
+//Step 3 : Send the request to the desired URL. We cannot assign this send request to some variable and then access it as the result of the send request is not there yet, this process is going on in the background and thus will block the following code till this lince of code is executed.
+//We will thus use an event listener with a callback function which will listen for the request to load, when it is fully loaded the function will be triggered.
+//this refers to the request you can also write request.responseText. responseText will store the result of send request.
+//The response we get is now in json format and we need to coonvert it to Javascript object.
+
+
+
+'use strict';
+
+const btn = document.querySelector('.btn-country');
+const countriesContainer = document.querySelector('.countries');
+
 ////////////Making AJAX calls using XMLHttp requests with callback functions//////////
 const renderCountry = function(data){
     const html = ` 
@@ -54,10 +100,11 @@ request2.addEventListener('load', function(){
 });
 };
 getCountryAndNeighbour('usa');
-
 //Here, the second callback function is nested isnside the first callback function and thus the second function will not be invoked before the first function. Thus, we will first get the data regarding the country and after that for its neighbour.
 
 ///////Making AJAX calls using Promises adn Fetch APIs/////////
+
+
 //const request = new XMLHttpRequest(); 
 //request.open('GET',`https://restcountries.eu/rest/v2/name/${country}`);
 
@@ -97,3 +144,4 @@ fetch(`https://restcountries.eu/rest/v2/name/${country}`)
 getCountryData('portugal');
 
 //We removed console statements as they were only for testing purpose and replaced regular functions with arrow functions that eturn values implicitly without using the return keyword.
+
